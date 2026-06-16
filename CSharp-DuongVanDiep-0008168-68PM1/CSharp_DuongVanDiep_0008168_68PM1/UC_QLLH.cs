@@ -19,8 +19,8 @@ namespace CSharp_DuongVanDiep_0008168_68PM1
             button3.Click += btnDeleteClass_Click;
             button4.Click += btnRefreshClass_Click;
             button10.Click += btnSearchClass_Click;
+            button5.Click += btnViewStudents_Click;  // Thêm sự kiện
             listView1.SelectedIndexChanged += listView1_SelectedIndexChanged;
-            button5.Enabled = false;
             button6.Enabled = false;
             button7.Enabled = false;
             button8.Enabled = false;
@@ -247,6 +247,19 @@ namespace CSharp_DuongVanDiep_0008168_68PM1
         private void btnSearchClass_Click(object sender, EventArgs e)
         {
             LoadClassList();
+        }
+
+        private void btnViewStudents_Click(object sender, EventArgs e)
+        {
+            if (selectedID == -1)
+            {
+                MessageBox.Show("Vui lòng chọn lớp học để xem danh sách sinh viên.", "Nhắc nhở", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            string maLop = textBox2.Text.Trim();
+            string tenLop = textBox3.Text.Trim();
+            FrmStudentListByClass frm = new FrmStudentListByClass(maLop, tenLop);
+            frm.ShowDialog();
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
