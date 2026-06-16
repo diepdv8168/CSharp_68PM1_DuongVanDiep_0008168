@@ -16,8 +16,8 @@ namespace CSharp_DuongVanDiep_0008168_68PM1
             this.Load += UC_QLSV_Load;
             button1.Click += btnAddStudent_Click;
             button2.Click += btnUpdateStudent_Click;
+            button3.Click += btnDeleteStudent_Click;
             listView1.SelectedIndexChanged += listView1_SelectedIndexChanged;
-            button3.Enabled = false;
             button4.Enabled = false;
             button5.Enabled = false;
             button6.Enabled = false;
@@ -228,6 +228,41 @@ namespace CSharp_DuongVanDiep_0008168_68PM1
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnDeleteStudent_Click(object sender, EventArgs e)
+        {
+            if (selectedID == -1)
+            {
+                MessageBox.Show("Vui lòng chọn sinh viên cần xóa!", "Nhắc nhở", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DialogResult dr = MessageBox.Show("Bạn có chắc chắn muốn xóa sinh viên này?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dr == DialogResult.Yes)
+            {
+                try
+                {
+                    string query = "DELETE FROM SinhVien WHERE ID = @ID";
+                    SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@ID", selectedID) };
+                    int rows = db.ExecuteNonQuery(query, parameters);
+                    if (rows > 0)
+                    {
+                        MessageBox.Show("Xóa sinh viên thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        ClearInputs();
+                        LoadStudentList();
+                        selectedID = -1;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Không tìm thấy sinh viên để xóa.", "Thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
