@@ -15,41 +15,45 @@
 
         private void InitializeComponent()
         {
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.lblTotal = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.SuspendLayout();
-
+            dataGridView1 = new DataGridView();
+            lblTotal = new Label();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            SuspendLayout();
+            // 
             // dataGridView1
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(700, 450);
-            this.dataGridView1.TabIndex = 0;
-
+            // 
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Dock = DockStyle.Fill;
+            dataGridView1.Location = new Point(0, 0);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowHeadersWidth = 51;
+            dataGridView1.Size = new Size(700, 470);
+            dataGridView1.TabIndex = 0;
+            // 
             // lblTotal
-            this.lblTotal.AutoSize = true;
-            this.lblTotal.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lblTotal.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblTotal.Location = new System.Drawing.Point(0, 430);
-            this.lblTotal.Name = "lblTotal";
-            this.lblTotal.Padding = new System.Windows.Forms.Padding(10);
-            this.lblTotal.Size = new System.Drawing.Size(250, 40);
-            this.lblTotal.TabIndex = 1;
-            this.lblTotal.Text = "Tổng số sinh viên: 0";
-
+            // 
+            lblTotal.AutoSize = true;
+            lblTotal.Dock = DockStyle.Bottom;
+            lblTotal.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblTotal.Location = new Point(0, 422);
+            lblTotal.Name = "lblTotal";
+            lblTotal.Padding = new Padding(10);
+            lblTotal.Size = new Size(221, 48);
+            lblTotal.TabIndex = 1;
+            lblTotal.Text = "Tổng số sinh viên: 0";
+            // 
             // FrmStudentListByClass
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(700, 470);
-            this.Controls.Add(this.lblTotal);
-            this.Controls.Add(this.dataGridView1);
-            this.Name = "FrmStudentListByClass";
-            this.Text = "Danh sách sinh viên";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(700, 470);
+            Controls.Add(lblTotal);
+            Controls.Add(dataGridView1);
+            Name = "FrmStudentListByClass";
+            Text = "Danh sách sinh viên";
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
     }
 }
