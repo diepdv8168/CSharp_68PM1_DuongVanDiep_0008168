@@ -9,6 +9,10 @@ namespace CSharp_DuongVanDiep_0008168_68PM1
     {
         private SQLHelper db = new SQLHelper();
         private int selectedID = -1;
+        private int currentPage = 1;
+        private int pageSize = 10;
+        private int totalRecords = 0;
+        private string searchKeyword = "";
 
         public UC_QLSV()
         {
@@ -17,13 +21,13 @@ namespace CSharp_DuongVanDiep_0008168_68PM1
             button1.Click += btnAddStudent_Click;
             button2.Click += btnUpdateStudent_Click;
             button3.Click += btnDeleteStudent_Click;
+            button5.Click += btnSearchStudent_Click;
+            button6.Click += btnFirstPage_Click;
+            button7.Click += btnPrevPage_Click;
+            button8.Click += btnNextPage_Click;
+            button9.Click += btnLastPage_Click;
             listView1.SelectedIndexChanged += listView1_SelectedIndexChanged;
             button4.Enabled = false;
-            button5.Enabled = false;
-            button6.Enabled = false;
-            button7.Enabled = false;
-            button8.Enabled = false;
-            button9.Enabled = false;
         }
 
         private void UC_QLSV_Load(object sender, EventArgs e)
@@ -80,12 +84,31 @@ namespace CSharp_DuongVanDiep_0008168_68PM1
             try
             {
                 listView1.Items.Clear();
-                string query = @"SELECT sv.ID, sv.MaSV, sv.HoTen, sv.NgaySinh, sv.GioiTinh, lh.TenLop 
-                                 FROM SinhVien sv 
-                                 INNER JOIN LopHoc lh ON sv.MaLop = lh.MaLop
-                                 ORDER BY sv.ID";
+                int startRow = (currentPage - 1) * pageSize + 1;
+                int endRow = currentPage * pageSize;
+
+                string countQuery = "SELECT COUNT(*) FROM SinhVien sv INNER JOIN LopHoc lh ON sv.MaLop = lh.MaLop";
+                string searchCondition = "";
+                if (!string.IsNullOrEmpty(searchKeyword))
+                {
+                    searchCondition = $" WHERE sv.MaSV LIKE '%{searchKeyword}%' OR sv.HoTen LIKE '%{searchKeyword}%' OR lh.TenLop LIKE '%{searchKeyword}%'";
+                    countQuery += searchCondition;
+                }
+                totalRecords = Convert.ToInt32(db.ExecuteScalar(countQuery));
+
+                string query = $@"
+                    SELECT * FROM (
+                        SELECT ROW_NUMBER() OVER (ORDER BY sv.ID) AS RowNum, 
+                               sv.ID, sv.MaSV, sv.HoTen, sv.NgaySinh, sv.GioiTinh, lh.TenLop
+                        FROM SinhVien sv 
+                        INNER JOIN LopHoc lh ON sv.MaLop = lh.MaLop
+                        {searchCondition}
+                    ) AS temp
+                    WHERE RowNum BETWEEN {startRow} AND {endRow}
+                    ORDER BY RowNum";
+
                 DataTable dt = db.ExecuteQuery(query);
-                int stt = 1;
+                int stt = startRow;
                 foreach (DataRow row in dt.Rows)
                 {
                     DateTime ngaySinh = Convert.ToDateTime(row["NgaySinh"]);
@@ -99,7 +122,11 @@ namespace CSharp_DuongVanDiep_0008168_68PM1
                     listView1.Items.Add(item);
                     stt++;
                 }
-                label11.Text = $"Tổng số sinh viên: {dt.Rows.Count}";
+
+                int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+                if (totalPages == 0) totalPages = 1;
+                label11.Text = $"Trang {currentPage}/{totalPages}   |   {totalRecords} bản ghi";
+
                 listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                 listView1.Columns[0].Width = 60;
             }
@@ -264,6 +291,48 @@ namespace CSharp_DuongVanDiep_0008168_68PM1
                     MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void btnSearchStudent_Click(object sender, EventArgs e)
+        {
+            searchKeyword = textBox3.Text.Trim();
+            currentPage = 1;
+            LoadStudentList();
+        }
+
+        private void btnFirstPage_Click(object sender, EventArgs e)
+        {
+            currentPage = 1;
+            LoadStudentList();
+        }
+
+        private void btnPrevPage_Click(object sender, EventArgs e)
+        {
+            if (currentPage > 1)
+            {
+                currentPage--;
+                LoadStudentList();
+            }
+        }
+
+        private void btnNextPage_Click(object sender, EventArgs e)
+        {
+            int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+            if (currentPage < totalPages)
+            {
+                currentPage++;
+                LoadStudentList();
+            }
+        }
+
+        private void btnLastPage_Click(object sender, EventArgs e)
+        {
+            int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+            if (totalPages > 0)
+                currentPage = totalPages;
+            else
+                currentPage = 1;
+            LoadStudentList();
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
